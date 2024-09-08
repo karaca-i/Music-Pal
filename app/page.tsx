@@ -1,6 +1,8 @@
 
 import { Feature } from "@/_components/feature";
+import { Login } from "@/_components/login";
 import { MainAbout } from "@/_components/main-about";
+import { SignUp } from "@/_components/sign-up";
 import { Topbar } from "@/_components/topbar";
 import { cookies } from "next/headers";
 
@@ -10,7 +12,7 @@ export default function Home() {
 
   const cookieStore = cookies();
   const token = cookieStore.get('spotify_access_token')?.value;
-  const testing = !false;
+  const testing = false;
 
 
   return (
@@ -37,10 +39,13 @@ export default function Home() {
         </div>
         /* TESTING COMPONENTS */
         : 
-        <div className="login-div">
-            HELLO
-        </div>
+        <>
+          <Login></Login>
+          <SignUp></SignUp>
+        </>
       }
     </> 
   )
 }
+
+

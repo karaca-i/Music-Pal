@@ -32,10 +32,14 @@ body > * {
     width: 100%;
     
     .left{
-        width: 250px;
+        width: 300px;
         display: flex;
         flex-direction: row;
         align-items: center;
+
+        gap:10px;
+
+        margin: 0 0 0 4px;
     }
     
     .mid{
@@ -53,9 +57,7 @@ body > * {
         align-items: center;
         justify-content: space-evenly;
     
-        width: 250px;
-        margin: 0 10px 0 0;
-        gap:10px;
+        width: 300px;
     }
 }
 
@@ -124,7 +126,7 @@ body > * {
 
     width: 80px;
 
-    margin: 0 0 0 7px;
+    margin: 0 12px 0 7px;
 
     padding: 2px 2px 2px 2px;
 
@@ -1105,5 +1107,70 @@ body > * {
     }
 }
 
+.flex-row-ja-c-c{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
 
+.flex-col-ja-c-c{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+.logged-in-user-outer-div{
+    position: relative;
+
+    .bot-div {
+        position: absolute;
+        background-color: #121217;
+        top: 50px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        border-radius: 10px;
+        padding: 2px 10px 2px 10px;
+        
+        .logout-button{
+            
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            gap:10px;
+            padding: 0px;
+            margin:0px;
+
+            transition: color 0.09s;
+            cursor: pointer;
+
+        }
+
+        .logout-button:hover{
+            color: rgb(220, 88, 88);
+        }
+    }
+}
+
+.logged-in-user{
+
+    height: 40px;
+
+    border: 1px solid rgba(86, 82, 82,0.94);
+    border-radius: 5px;
+    padding: 0 10px 0 0;
+
+    img{
+        width: 80%;
+        height: 80%;
+    }
+
+}
+
+.logged-in-user-outer-div:hover .bot-div,
+.bot-div:hover {
+    opacity: 1;
+    visibility: visible;
+}

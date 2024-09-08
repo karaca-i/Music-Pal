@@ -32,7 +32,7 @@ export function Feature(){
 
             </a>
 
-            <a type="button">
+            <a type="button" href="/match">
                 <div className="seperate-div">
                     <div className="seperate-top">
                         <img className="user-icon" src="user-icon.png" alt="user"></img>   
