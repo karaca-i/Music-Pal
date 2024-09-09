@@ -11,6 +11,9 @@ interface Playlist {
     images: Array<{ url: string }>;
   }
 
+  type User = {
+    name: string;
+}
 
   interface Track {
     id: string;
@@ -35,8 +38,56 @@ interface Playlist {
     tempo: number;
 }
 
-export async function getUserMatchScores(playlistId: string) {
+export async function LoginTool(email: string, password: string) {
+  const backendUrl = 'http://127.0.0.1:4000';
+  const response = await fetch(backendUrl + '/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+    credentials: 'include', // Ensures cookies from backend are included in the response
+  });
+
+  if (response.ok) {
+    // No need to manually set the JWT token. It's already stored as an HTTP-only cookie by the backend.
+    const data = await response.json();
+
+  } else {
+    // Handle login error (e.g., incorrect credentials)
+    console.log('Login failed');
+
+  }
+}
+
+export async function UserTool({func}:{func: any}) {
+  const backendUrl = 'http://127.0.0.1:4000';
+  const response = await fetch(backendUrl + '/api/user', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // Ensures cookies from backend are included in the response
+  });
+
+  if (response.ok) {
+    // No need to manually set the JWT token. It's already stored as an HTTP-only cookie by the backend.
+    const data = await response.json();
+    func(data);
+  } else {
+    // Handle login error (e.g., incorrect credentials)
+    console.log('Login failed');
+    func(null)
+  }
+}
+
+export async function getUserMatchScores(playlistId: string,id:number) {
     try {
+      
+
       const cookieStore = cookies();
       let token = cookieStore.get('spotify_access_token')?.value;
       const expiration = cookieStore.get('spotify_token_expiration')?.value;
@@ -93,6 +144,7 @@ export async function getUserMatchScores(playlistId: string) {
       const genre_scores = await response.json();
 
       // get the audio features for the playlist
+
       const go_response = await fetch('http://127.0.0.1:4000/api/user-match', {
         method: 'POST',
         headers: {
@@ -101,16 +153,18 @@ export async function getUserMatchScores(playlistId: string) {
         body: JSON.stringify({
           genre_scores: genre_scores,
           audio_features: audioFeaturesArray,
+          id: Number(id),
         }),
       });
 
+
       if (!go_response.ok){
-        throw new Error('Failed to fetch user match scores from go backend');
+        throw new Error('Failed to fetch user match scores from go backend' + go_response.statusText);
       }
 
       // this data includes the sorted version of other users with match percentage
       const go_data = await go_response.json();
-      console.log(go_data)
+      //console.log(go_data)
 
       return go_data;
 

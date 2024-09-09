@@ -12,10 +12,9 @@ import { AboutMe } from "./about-me";
 
 type User = {
     name: string;
-    id: number;
 }
 
-export function Topbar2({func}:{func: any}){
+export function Topbar3({taste}:{taste:any}){
 
     const[user, setUser] = useState<User|null>(null);
     const [loading, setLoading] = useState(true);
@@ -25,7 +24,35 @@ export function Topbar2({func}:{func: any}){
     useEffect(() => {
         setLoading(true);
 
-        const fetchData = async () => {
+        if (taste != null){
+            const fetchData = async () => {
+                const response = await fetch('http://127.0.0.1:4000/api/taste-allow', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(taste)
+                });
+
+    
+                if(response.ok){
+                    const data = await response.json();
+         
+                    setUser(data);
+                }
+                else{
+                    const data = await response.json();
+          
+                    setUser(null);
+                }
+    
+                setLoading(false);
+            }
+            fetchData();
+        }
+        
+        const fetchData2 = async () => {
             const response = await fetch('http://127.0.0.1:4000/api/user', {
                 method: 'GET',
                 headers: {
@@ -37,20 +64,19 @@ export function Topbar2({func}:{func: any}){
 
             if(response.ok){
                 const data = await response.json();
-
+       
                 setUser(data);
-                func(data)
             }
             else{
                 const data = await response.json();
-  
+    
                 setUser(null);
-                func(null)
             }
 
             setLoading(false);
         }
-     fetchData();
+        fetchData2();
+        
         
     },[]);
 

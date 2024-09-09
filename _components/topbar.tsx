@@ -36,12 +36,12 @@ export function Topbar(){
 
             if(response.ok){
                 const data = await response.json();
-                console.log(data);
+
                 setUser(data);
             }
             else{
                 const data = await response.json();
-                console.log(data);
+ 
                 setUser(null);
             }
 

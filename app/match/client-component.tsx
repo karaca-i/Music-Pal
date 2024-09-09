@@ -4,10 +4,12 @@ import { SpotifyPlaylist } from "@/_components/spotify-playlist";
 import IdentityText from "@/_components/text-identity-list";
 import { Topbar2 } from "@/_components/topbar2";
 import { setDefaultAutoSelectFamily } from "net";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type User = {
     name: string;
+    id: number;
 }
 
 export default function MatchClientComponent({playlists}:{playlists: any}){
@@ -15,6 +17,7 @@ export default function MatchClientComponent({playlists}:{playlists: any}){
     const [distances, setDistances] = useState([]);
     const [data, setData] = useState({});
     const[user, setUser] = useState<User|null>(null);
+    const router = useRouter()
 
     /*
     useEffect(() => {
@@ -26,13 +29,12 @@ export default function MatchClientComponent({playlists}:{playlists: any}){
         fetchData();
     }, []); 
     */
-
-    return (
-        <>
+   
+   return (
+       <>
             <Topbar2 func={(arg:User|null) => {setUser(arg)}}></Topbar2>
-
             {
-                user ? 
+                user &&
                 <>
                     <IdentityText></IdentityText>
                     <div className='playlists'>
@@ -43,15 +45,11 @@ export default function MatchClientComponent({playlists}:{playlists: any}){
                             playlistName={playlist.name}
                             playlistId={playlist.id}
                             images={playlist.images} 
-                            href_={`/match/${playlist.id}`}
+                            href_={`/match/${playlist.id}?id=${user.id}`}
                             />
                         ))}
                     </div> 
                 </>
-                :
-                <div>
-                    <p>Not logged in</p>
-                </div>
             }
         </>
     )
