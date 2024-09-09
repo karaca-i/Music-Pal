@@ -7,6 +7,7 @@ import { Login } from "./login";
 import { SignUp } from "./sign-up";
 import SpotifyInfo from "./spotify-info";
 import { useRouter } from "next/navigation";
+import { AboutMe } from "./about-me";
 
 
 type User = {
@@ -96,6 +97,7 @@ export function Topbar(){
             </div>
 
             <div className="right">
+                <AboutMe></AboutMe>
                 <Github></Github>
                 <Linkedin></Linkedin>
             </div>

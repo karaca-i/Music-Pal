@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 
 interface Playlist {
@@ -33,6 +34,91 @@ interface Playlist {
     valence: number;
     tempo: number;
 }
+
+export async function getUserMatchScores(playlistId: string) {
+    try {
+      const cookieStore = cookies();
+      let token = cookieStore.get('spotify_access_token')?.value;
+      const expiration = cookieStore.get('spotify_token_expiration')?.value;
+  
+      if (!token) {
+        throw new Error('No access token found. Please log in.');
+      }
+  
+      if (expiration && Date.now() > parseInt(expiration)) {
+        // Token is expired, refresh it
+        const refreshResponse = await fetch('/api/refresh-token');
+        if (!refreshResponse.ok) {
+          throw new Error('Failed to refresh access token.');
+        }
+  
+        // Retrieve the new token from the cookies after refresh
+        const refreshedToken = cookieStore.get('spotify_access_token')?.value;
+  
+        if (!refreshedToken) {
+          throw new Error('Failed to retrieve refreshed access token.');
+        }
+  
+        token = refreshedToken;
+      }
+
+      const tracks = await getSpotifyPlaylistTracks(playlistId);
+
+      if (!tracks){
+          throw new Error('Fail1');
+      }
+      
+      const trackCount = tracks.length;
+      const trackIds = tracks.map(track => track.id);
+      const audioFeaturesArray = await Promise.all(trackIds.map(async (trackId) => {
+          const audioFeatures = await getTrackAudioFeatures(trackId);
+          return audioFeatures;
+        }));
+
+      const response = await fetch('http://127.0.0.1:5000/genre_scores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tracks: audioFeaturesArray,
+          track_count: trackCount,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze playlist');
+      }
+    
+      const genre_scores = await response.json();
+
+      // get the audio features for the playlist
+      const go_response = await fetch('http://127.0.0.1:4000/api/user-match', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          genre_scores: genre_scores,
+          audio_features: audioFeaturesArray,
+        }),
+      });
+
+      if (!go_response.ok){
+        throw new Error('Failed to fetch user match scores from go backend');
+      }
+
+      // this data includes the sorted version of other users with match percentage
+      const go_data = await go_response.json();
+      console.log(go_data)
+
+      return go_data;
+
+    } catch (error) {
+      console.error('Failed to fetch user match scoresx:',error);
+      return null;
+    }
+  }
 
 export async function analyzePlaylist(trackData: any[], totalTracks: number){
     const response = await fetch('http://127.0.0.1:5000/analyze_playlist', {

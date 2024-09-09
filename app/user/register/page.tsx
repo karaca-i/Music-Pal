@@ -1,5 +1,6 @@
 'use client'
 
+import { match } from 'assert';
 import {useRouter} from 'next/navigation';
 import { SyntheticEvent, useState } from 'react';
 
@@ -23,12 +24,13 @@ export default function Register() {
           email: email,
           password: password,
           name: name,
+          tastematch:false,
         }),
       });
       
       if (response.ok) {
         // If registration is successful, redirect to the login page
-        router.push('/login');
+        router.push('/user/login');
       } else {
         // If registration fails, show the error message to the user
         const errorData = await response.json(); // Assuming the API sends back an error message

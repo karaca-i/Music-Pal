@@ -39,8 +39,7 @@ export function Feature(){
                     </div>
                     <div className="seperate-bot">
                         <p>
-                            Meet with the other users have the same taste of music. 
-                            (Soon)
+                            Meet with the other users have the same taste of music.
                         </p>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 
 import { Feature } from "@/_components/feature";
 import { Login } from "@/_components/login";
-import { MainAbout } from "@/_components/main-about";
+import MainIntro from "@/_components/main-intro";
 import { SignUp } from "@/_components/sign-up";
 import { Topbar } from "@/_components/topbar";
 import { cookies } from "next/headers";
@@ -21,7 +21,7 @@ export default function Home() {
         !testing ? 
         <div className="homepage-wrapper">
           <Topbar></Topbar>
-          <MainAbout></MainAbout>
+          <MainIntro></MainIntro>
           {
             token ? <Feature></Feature> : 
             <div className="spotify-access-login">
