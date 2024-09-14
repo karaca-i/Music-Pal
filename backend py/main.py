@@ -3,14 +3,14 @@ from spotipy.oauth2 import SpotifyOAuth
 from flask_cors import CORS
 import time
 
+import os
 import pickle
 import numpy as np
 from flask import Flask, request, redirect, session, url_for,jsonify
 
 app = Flask(__name__)
 CORS(app)
-app.secret_key='sakdljafkjas74231hrnu234'
-
+app.secret_key=os.getenv('GO_SECRET_KEY')
 
 
 import pickle
