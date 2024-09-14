@@ -4,7 +4,7 @@
 Since Spotify, one of the most popular music apps, doesn’t provide users with genre information (and it’s also unavailable through their API), large, disorganized playlists can sometimes become less enjoyable to listen to as a whole, even if the individual tracks are favorites. That's why offering a one-click solution to reorganize them by similarities is a great idea. The other two features—playlist population and user matching—came to mind after starting the project, as they also offer fun ways to enhance the music experience.
 
 ## Demo
-https://youtu.be/q5MCEn0nC1I
+[Watch the Project Demo on YouTube - 4min](https://youtu.be/tmbCshX3Yeo)
 
 ## Usage
 **1-Music Classification:** Connect your Spotify account, select a playlist, and let MusicPal automatically sort your songs into similar groups.
