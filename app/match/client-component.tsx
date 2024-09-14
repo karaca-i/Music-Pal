@@ -34,7 +34,7 @@ export default function MatchClientComponent({playlists}:{playlists: any}){
        <>
             <Topbar2 func={(arg:User|null) => {setUser(arg)}}></Topbar2>
             {
-                user &&
+                user ?
                 <>
                     <IdentityText></IdentityText>
                     <div className='playlists'>
@@ -49,6 +49,9 @@ export default function MatchClientComponent({playlists}:{playlists: any}){
                             />
                         ))}
                     </div> 
+                </> :
+                <>
+                    <h1>You must be logged in to use this feature.</h1>
                 </>
             }
         </>

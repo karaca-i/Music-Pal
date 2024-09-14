@@ -99,6 +99,32 @@ func UserMatchTasteAllow(c fiber.Ctx) error {
 		Rock:       data.GenreScores.Rock,
 		House:      data.GenreScores.House,
 	}
+
+	var featureMedium = FeatureMedium{
+		Danceability:     0.0,
+		Energy:           0.0,
+		Loudness:         0.0,
+		Speechiness:      0.0,
+		Acousticness:     0.0,
+		Instrumentalness: 0.0,
+		Liveness:         0.0,
+		Valence:          0.0,
+		Tempo:            0.0,
+	}
+
+	for _, track := range data.AudioFeatures {
+		featureMedium.Danceability += track.Danceability
+		featureMedium.Energy += track.Energy
+		featureMedium.Loudness += track.Loudness
+		featureMedium.Speechiness += track.Speechiness
+		featureMedium.Acousticness += track.Acousticness
+		featureMedium.Instrumentalness += track.Instrumentalness
+		featureMedium.Liveness += track.Liveness
+		featureMedium.Valence += track.Valence
+		featureMedium.Tempo += track.Tempo
+	}
+
+	user.Features = database.FeatureMedium(featureMedium)
 	/*
 	 */
 
@@ -111,6 +137,32 @@ func UserMatchTasteAllow(c fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+func CosineSimilarity(a, b []float64) float64 {
+	var dotProduct float64
+	var normA float64
+	var normB float64
+
+	for i := 0; i < len(a); i++ {
+		dotProduct += a[i] * b[i]
+		normA += a[i] * a[i]
+		normB += b[i] * b[i]
+	}
+
+	return dotProduct / (math.Sqrt(normA) * math.Sqrt(normB))
+}
+
+type FeatureMedium struct {
+	Danceability     float64 `json:"danceability"`
+	Energy           float64 `json:"energy"`
+	Loudness         float64 `json:"loudness"`
+	Speechiness      float64 `json:"speechiness"`
+	Acousticness     float64 `json:"acousticness"`
+	Instrumentalness float64 `json:"instrumentalness"`
+	Liveness         float64 `json:"liveness"`
+	Valence          float64 `json:"valence"`
+	Tempo            float64 `json:"tempo"`
+}
+
 func UserMatch2(c fiber.Ctx) error {
 
 	//
@@ -120,10 +172,43 @@ func UserMatch2(c fiber.Ctx) error {
 		return err
 	}
 
-	/*
-		fmt.Println("Genre Scores:", data.GenreScores)
-		fmt.Println("Audio Features:", data.AudioFeatures)
-	*/
+	// get track features
+	// Audio Features cosine similarity
+	track_len := len(data.AudioFeatures)
+
+	var featureMedium = FeatureMedium{
+		Danceability:     0.0,
+		Energy:           0.0,
+		Loudness:         0.0,
+		Speechiness:      0.0,
+		Acousticness:     0.0,
+		Instrumentalness: 0.0,
+		Liveness:         0.0,
+		Valence:          0.0,
+		Tempo:            0.0,
+	}
+
+	for _, track := range data.AudioFeatures {
+		featureMedium.Danceability += track.Danceability
+		featureMedium.Energy += track.Energy
+		featureMedium.Loudness += track.Loudness
+		featureMedium.Speechiness += track.Speechiness
+		featureMedium.Acousticness += track.Acousticness
+		featureMedium.Instrumentalness += track.Instrumentalness
+		featureMedium.Liveness += track.Liveness
+		featureMedium.Valence += track.Valence
+		featureMedium.Tempo += track.Tempo
+	}
+
+	featureMedium.Danceability /= float64(track_len)
+	featureMedium.Energy /= float64(track_len)
+	featureMedium.Loudness /= float64(track_len)
+	featureMedium.Speechiness /= float64(track_len)
+	featureMedium.Acousticness /= float64(track_len)
+	featureMedium.Instrumentalness /= float64(track_len)
+	featureMedium.Liveness /= float64(track_len)
+	featureMedium.Valence /= float64(track_len)
+	featureMedium.Tempo /= float64(track_len)
 
 	var matchedUsers []database.User
 
@@ -152,8 +237,34 @@ func UserMatch2(c fiber.Ctx) error {
 		similarity += int(math.Min(float64(userScores.Rnb), float64(dataScores.Rnb)))
 		similarity += int(math.Min(float64(userScores.Rock), float64(dataScores.Rock)))
 		similarity += int(math.Min(float64(userScores.House), float64(dataScores.House)))
+		similarity *= 4
 
-		similarity *= 5
+		// cosine similarity
+		cosine_similarity := CosineSimilarity([]float64{
+			featureMedium.Danceability,
+			featureMedium.Energy,
+			featureMedium.Loudness,
+			featureMedium.Speechiness,
+			featureMedium.Acousticness,
+			featureMedium.Instrumentalness,
+			featureMedium.Liveness,
+			featureMedium.Valence,
+			featureMedium.Tempo,
+		}, []float64{
+			user.Features.Danceability,
+			user.Features.Energy,
+			user.Features.Loudness,
+			user.Features.Speechiness,
+			user.Features.Acousticness,
+			user.Features.Instrumentalness,
+			user.Features.Liveness,
+			user.Features.Valence,
+			user.Features.Tempo,
+		})
+
+		fmt.Println("cosine_similarity", cosine_similarity)
+
+		similarity += int(cosine_similarity * 10)
 
 		if data.ID != user.ID {
 			userSimilarities = append(userSimilarities, UserSimilarity{

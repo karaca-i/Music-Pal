@@ -157,7 +157,6 @@ export async function getUserMatchScores(playlistId: string,id:number) {
         }),
       });
 
-
       if (!go_response.ok){
         throw new Error('Failed to fetch user match scores from go backend' + go_response.statusText);
       }
