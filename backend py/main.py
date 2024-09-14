@@ -13,32 +13,22 @@ app.secret_key='sakdljafkjas74231hrnu234'
 
 
 
-
-# REAL CODE
-
-# Load the model
 import pickle
 import numpy as np
 
-# Load the model, DictVectorizer, and classes
 with open('model.bin', 'rb') as f_in:
     dv, rf, classes = pickle.load(f_in)
 
-# Function to predict genre
 def predict_genre(audio_features):
-    # Convert the audio features to a dictionary
+
     track_dict = audio_features
 
-    # Transform the features using the loaded DictVectorizer
     X = dv.transform([track_dict])
 
-    # Predict the genre probabilities
     y_pred = rf.predict_proba(X)
 
-    # Get the predicted genre (index with highest probability)
     genre_index = np.argmax(y_pred)
-    
-    # Convert label index to genre
+
     predicted_genre = classes[genre_index]
     
     return predicted_genre
@@ -49,9 +39,6 @@ def analyze_playlist():
     data = request.get_json()
     track_count = data['track_count']
     tracks = data['tracks']
-
-    #print('track count',track_count)
-    #print('tracks',tracks)
 
     genres = {}
     
