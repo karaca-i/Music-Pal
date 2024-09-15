@@ -31,7 +31,7 @@ Authentication: Spotify OAuth, JWT-based authentication
 Music API: Spotify API to get Audio Features  
 Machine Learning: scikit-learn (Python) - Random forest classifier  
 
-## Audio Features
+## Example Audio Features
 Audio Features | danceability | energy | loudness | speechiness | acousticness | insturmentalness | liveness | valence | tempo |
 --- | --- | --- | --- |--- |--- |--- |--- |--- |--- |
 Values | 0.63 | 0.002133 | 0.536329 | 0.3214 | 0.00056 | 0.7897 | 0.9965 | 0.675 | 0.00045 |
